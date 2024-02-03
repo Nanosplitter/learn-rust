@@ -1,11 +1,14 @@
-use std::io::{self};
+use std::{
+    collections::HashMap,
+    io::{self},
+};
 
 fn main() {
     let lines = io::stdin().lines();
 
-    let total = get_sum_lines(lines.map(|line| line.unwrap()));
+    let total = get_lines_summary(lines.map(|line| line.unwrap()));
 
-    println!("total: {}", total);
+    dbg!(total);
 }
 
 fn get_sum_lines<I: Iterator<Item = String>>(lines: I) -> i32 {
@@ -13,6 +16,16 @@ fn get_sum_lines<I: Iterator<Item = String>>(lines: I) -> i32 {
         .take_while(|line| line.len() > 0)
         .filter_map(|line| line.trim().parse::<i32>().ok())
         .sum()
+}
+
+fn get_lines_summary<I: Iterator<Item = String>>(lines: I) -> HashMap<i32, usize> {
+    return lines
+        .take_while(|line| line.len() > 0)
+        .filter_map(|line| line.trim().parse::<i32>().ok())
+        .fold(HashMap::new(), |mut map, num| {
+            *map.entry(num).or_insert(0) += 1;
+            return map;
+        });
 }
 
 #[cfg(test)]
